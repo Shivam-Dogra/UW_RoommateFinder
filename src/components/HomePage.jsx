@@ -13,8 +13,10 @@ const HomePage = () => {
       <nav className="bg-red-800 text-white p-4 shadow-md">
         <div className="container mx-auto flex justify-between items-center">
           <h1 className="font-bold text-xl">Roommate Finder 🔎</h1>
-          <input type="text" placeholder="Search Group..." className="p-2 rounded bg-white border-transparent focus:border-gray-500 focus:bg-white focus:ring-0" />
           <div>
+          <button className="bg-blue-600 hover:bg-blue-800 text-white font-bold py-2 px-4 mx-2 rounded transition duration-300 ease-in-out"  onClick={() => navigate('/viewgroups')}>
+              Groups 
+            </button>
           <button className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 mx-5 rounded transition duration-300 ease-in-out"  onClick={() => navigate('/explorewindsor')}>
               Explore Windsor 
             </button>
