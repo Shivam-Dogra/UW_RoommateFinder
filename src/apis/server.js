@@ -1,17 +1,15 @@
-
 import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
-import puppeteer from "puppeteer"; // Import Puppeteer
+import puppeteer from "puppeteer";
 import mongoose from "mongoose";
-import { users } from '../assets/profile.js'
+import { users } from "../assets/profile.js";
 
 // Connect to MongoDB
 mongoose.connect("mongodb://localhost:27017/roommateFinder", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
-
 
 const app = express();
 const port = 5000;
@@ -117,7 +115,7 @@ app.get("/events", async (req, res) => {
   }
 });
 
-// Define the schema
+// Define the schema for Person
 const personSchema = new mongoose.Schema({
   fullName: { type: String, required: true },
   gender: { type: String, required: true },
@@ -135,10 +133,23 @@ const personSchema = new mongoose.Schema({
   wantsToFormGroup: { type: String, required: true },
   interests: { type: [String], required: false },
   uniqueKey: { type: String, unique: true, required: true },
+  groupName: { type: String, required: false },
+  groupDescription: { type: String, required: false },
 });
 
-// Create the model
+// Create the model for Person
 const Person = mongoose.model("Person", personSchema);
+
+// Define the schema for Group
+const groupSchema = new mongoose.Schema({
+  groupName: { type: String, required: true },
+  groupDescription: { type: String, required: true },
+  admin: { type: String, required: true }, // Admin is now a string containing the fullName
+  members: [{ type: mongoose.Schema.Types.ObjectId, ref: "Person" }], // Members array remains as ObjectId references to Person
+});
+
+// Create the model for Group
+const Group = mongoose.model("Group", groupSchema);
 
 // Define a GET endpoint to fetch all people
 app.get("/api/people", async (req, res) => {
@@ -154,9 +165,21 @@ app.get("/api/people", async (req, res) => {
 app.post("/api/people", async (req, res) => {
   try {
     const uniqueKey = generateUniqueKey();
-    const newPerson = new Person({ ...req.body, uniqueKey });
+    const { groupName, groupDescription, ...personDetails } = req.body;
+    const newPerson = new Person({ ...personDetails, uniqueKey });
     const savedPerson = await newPerson.save();
-    res.status(201).json({ person: savedPerson, uniqueKey: uniqueKey });
+
+    if (groupName && groupDescription) {
+      const newGroup = new Group({
+        groupName,
+        groupDescription,
+        admin: savedPerson.fullName, // Use fullName as the admin
+        members: [], // Initialize members as an empty array
+      });
+      await newGroup.save();
+    }
+
+    res.status(201).json({ person: savedPerson, uniqueKey });
   } catch (error) {
     res.status(400).json({ message: "Error creating person", error });
   }
@@ -177,35 +200,86 @@ app.post("/api/checkUniqueKey", async (req, res) => {
   }
 });
 
-// Start the server
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
-
-app.get('/viewgroups', (req, res) => {
-  const groups = users
-      .filter(user => user.groupFormed)
-      .map(user => ({
-          emailID: user.emailID,
-          groupName: user.groupName,
-          groupAdmin: user.name
-      }));
-  res.json(groups);
-});
-
-app.get('/profile', (req, res) => {
-  const email = req.query.email;
-  const user = users.find(user => user.emailID === email);
-  
-  if (user) {
-    res.json(user);
-  } else {
-    res.status(404).json({ error: 'User not found' });
+// POST endpoint to create a new group
+app.post("/api/groups", async (req, res) => {
+  try {
+    const { groupName, groupDescription, admin, memberIds } = req.body;
+    const newGroup = new Group({
+      groupName,
+      groupDescription,
+      admin,
+      members: memberIds,
+    });
+    const savedGroup = await newGroup.save();
+    res.status(201).json(savedGroup);
+  } catch (error) {
+    res.status(400).json({ message: "Error creating group", error });
   }
 });
 
+// GET endpoint to fetch all groups
+app.get("/api/groups", async (req, res) => {
+  try {
+    const groups = await Group.find().populate("admin").populate("members");
+    res.json(groups);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching groups", error });
+  }
+});
 
+// GET endpoint to fetch a specific group by ID
+app.get("/api/groups/:id", async (req, res) => {
+  try {
+    const group = await Group.findById(req.params.id)
+      .populate("admin")
+      .populate("members");
+    if (group) {
+      res.json(group);
+    } else {
+      res.status(404).json({ message: "Group not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching group", error });
+  }
+});
+
+// PUT endpoint to update a specific group by ID
+app.put("/api/groups/:id", async (req, res) => {
+  try {
+    const updatedGroup = await Group.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      {
+        new: true,
+      }
+    )
+      .populate("admin")
+      .populate("members");
+    if (updatedGroup) {
+      res.json(updatedGroup);
+    } else {
+      res.status(404).json({ message: "Group not found" });
+    }
+  } catch (error) {
+    res.status(400).json({ message: "Error updating group", error });
+  }
+});
+
+// DELETE endpoint to delete a specific group by ID
+app.delete("/api/groups/:id", async (req, res) => {
+  try {
+    const deletedGroup = await Group.findByIdAndDelete(req.params.id);
+    if (deletedGroup) {
+      res.json({ message: "Group deleted" });
+    } else {
+      res.status(404).json({ message: "Group not found" });
+    }
+  } catch (error) {
+    res.status(400).json({ message: "Error deleting group", error });
+  }
+});
+
+// Start the server
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });

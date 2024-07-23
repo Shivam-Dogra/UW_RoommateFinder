@@ -19,6 +19,9 @@ const NewUserPage = () => {
     leaseDuration: "",
     email: "opkoij",
     wantsToFormGroup: "",
+    groupName: "",
+    groupDescription: "",
+    interests: [],
   });
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -269,6 +272,37 @@ const NewUserPage = () => {
               <option value="No">No</option>
             </select>
           </div>
+          {user.wantsToFormGroup == "Yes" && (
+            <div className="mb-4">
+              <label className="block text-gray-700 font-semibold">
+                Group Name
+              </label>
+              <input
+                type="text"
+                name="groupName"
+                value={user?.groupName}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                required
+              />
+            </div>
+          )}
+          {user.wantsToFormGroup == "Yes" && (
+            <div className="mb-4">
+              <label className="block text-gray-700 font-semibold">
+                Group Description
+              </label>
+              <input
+                type="text"
+                name="groupDescription"
+                value={user?.groupDescription}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                required
+              />
+            </div>
+          )}
+
           <div className="mb-4">
             <label className="block text-gray-700 font-semibold">
               Lease Duration
@@ -287,14 +321,14 @@ const NewUserPage = () => {
               Interests
             </label>
             <div className="flex flex-wrap -mx-2">
-              {[].map((interest) => (
+              {interestOptions.map((interest) => (
                 <div key={interest} className="w-1/3 px-2 mb-2">
                   <label className="flex items-center">
                     <input
                       type="checkbox"
                       name="interests"
                       value={interest}
-                      checked={""}
+                      checked={user.interests.includes(interest)}
                       onChange={handleInterestsChange}
                       className="mr-2"
                     />
