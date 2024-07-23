@@ -37,7 +37,8 @@ const ProfileCard = ({ user }) => {
         <h4 className="font-bold mt-2">Budget</h4> <p>{user.budget}</p>
         <h4 className="font-bold mt-2">Accommodation Found</h4>{" "}
         <p>{user.accommodationFound ? "Yes" : "No"}</p>
-        <h4 className="font-bold mt-2">Lease Duration</h4> <p>{user.leaseDuration}</p>
+        <h4 className="font-bold mt-2">Lease Duration</h4>{" "}
+        <p>{user.leaseDuration}</p>
         <h3 className="font-bold mt-2">Interests</h3>
         <div className="flex flex-wrap mt-2">
           {user.interests.map((interest) => (
@@ -48,9 +49,9 @@ const ProfileCard = ({ user }) => {
             </span>
           ))}
         </div>
-        <button 
+        <button
           onClick={handleViewJoinGroup}
-          className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded block w-full mt-4">
+          className="bg-yellow-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded block w-full mt-4">
           View/Join Group
         </button>
       </div>
