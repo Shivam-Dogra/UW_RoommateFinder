@@ -118,19 +118,20 @@ app.get("/events", async (req, res) => {
 const personSchema = new mongoose.Schema({
   fullName: { type: String, required: true },
   gender: { type: String, required: true },
-  graduationYear: { type: Number, required: true },
+  graduationYear: { type: String, required: true },
   enrolledCourse: { type: String, required: true },
   profileImage: { type: String, required: false }, // URL or path to the image
   plannedNeighbourhood: { type: String, required: true },
   currentLivingIn: { type: String, required: true },
   major: { type: String, required: true },
   hometown: { type: String, required: true },
-  budget: { type: Number, required: true },
-  accommodationFound: { type: Boolean, required: true },
+  budget: { type: String, required: true },
+  accommodationFound: { type: String, required: true },
   leaseDuration: { type: String, required: true },
   email: { type: String, required: true },
-  wantsToFormGroup: { type: Boolean, required: true },
+  wantsToFormGroup: { type: String, required: true },
   interests: { type: [String], required: false },
+  uniqueKey: { type: String, unique: true, required: true },
 });
 
 // Create the model
@@ -152,9 +153,10 @@ app.get("/api/people", async (req, res) => {
 
 app.post("/api/people", async (req, res) => {
   try {
-    const newPerson = new Person(req.body);
+    const uniqueKey = generateUniqueKey();
+    const newPerson = new Person({ ...req.body, uniqueKey });
     const savedPerson = await newPerson.save();
-    res.status(201).json(savedPerson);
+    res.status(201).json({ person: savedPerson, uniqueKey: uniqueKey });
   } catch (error) {
     res.status(400).json({ message: "Error creating person", error });
   }

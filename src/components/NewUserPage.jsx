@@ -17,8 +17,8 @@ const NewUserPage = () => {
     budget: "",
     accommodationFound: "",
     leaseDuration: "",
-    email: "",
-    wantsToFormGroup: true,
+    email: "opkoij",
+    wantsToFormGroup: "",
   });
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -66,23 +66,15 @@ const NewUserPage = () => {
         body: JSON.stringify(user),
       });
       const data = await response.json();
+      const id = data.uniqueKey;
+      users.push({ ...user, id });
+      setUniqueId(id);
+      setModalOpen(true); // Open the modal
       console.log("data1223", data);
     } catch (e) {
       console.error("Error fetching unique key:", error);
     }
     // Fetch a unique key from the API
-    // try {
-    //   const response = await fetch("http://localhost:5000/uniquekey");
-    //   const data = await response.json(user);
-    //   // const id = data.uniqueKey;
-
-    //   // Save user details with the unique ID
-    //   users.push({ ...user, id });
-    //   setUniqueId(id);
-    //   setModalOpen(true); // Open the modal
-    // } catch (error) {
-    //   console.error("Error fetching unique key:", error);
-    // }
   };
 
   const handleCloseModal = () => {
@@ -254,6 +246,21 @@ const NewUserPage = () => {
             <select
               name="accommodationFound"
               value={user?.accommodationFound}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+              required>
+              <option value="">Select</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700 font-semibold">
+              Want to form group?
+            </label>
+            <select
+              name="wantsToFormGroup"
+              value={user?.wantsToFormGroup}
               onChange={handleChange}
               className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
               required>
