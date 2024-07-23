@@ -75,3 +75,9 @@ export const users = [
         interests: ["Painting", "Sculpture", "Photography", "Music", "Traveling", "Cooking", "Art Exhibitions", "Reading"]
     }
 ];
+
+export const group = {
+    name: "Study Group",
+    adminName: "John Doe",
+    members: ["Alice", "Bob", "Charlie", "Dave"],
+  };

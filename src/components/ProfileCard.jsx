@@ -1,6 +1,13 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const ProfileCard = ({ user }) => {
+  const navigate = useNavigate();
+
+  const handleViewJoinGroup = () => {
+    navigate("/group");
+  };
+
   return (
     <div className="max-w-sm rounded overflow-hidden shadow-lg bg-white bg-opacity-75 p-6 m-3 hover:bg-opacity-90 transition duration-300 ease-in-out transform hover:-translate-y-1">
       <div className="flex items-center space-x-4">
@@ -30,8 +37,7 @@ const ProfileCard = ({ user }) => {
         <h4 className="font-bold mt-2">Budget</h4> <p>{user.budget}</p>
         <h4 className="font-bold mt-2">Accommodation Found</h4>{" "}
         <p>{user.accommodationFound ? "Yes" : "No"}</p>
-        <h4 className="font-bold mt-2">Lease Duration</h4>{" "}
-        <p>{user.leaseDuration}</p>
+        <h4 className="font-bold mt-2">Lease Duration</h4> <p>{user.leaseDuration}</p>
         <h3 className="font-bold mt-2">Interests</h3>
         <div className="flex flex-wrap mt-2">
           {user.interests.map((interest) => (
@@ -42,6 +48,11 @@ const ProfileCard = ({ user }) => {
             </span>
           ))}
         </div>
+        <button 
+          onClick={handleViewJoinGroup}
+          className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded block w-full mt-4">
+          View/Join Group
+        </button>
       </div>
     </div>
   );
