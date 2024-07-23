@@ -1,14 +1,17 @@
+
 import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
 import puppeteer from "puppeteer"; // Import Puppeteer
 import mongoose from "mongoose";
+import { users } from '../assets/profile.js'
 
 // Connect to MongoDB
 mongoose.connect("mongodb://localhost:27017/roommateFinder", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
+
 
 const app = express();
 const port = 5000;
@@ -179,6 +182,29 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
+
+app.get('/viewgroups', (req, res) => {
+  const groups = users
+      .filter(user => user.groupFormed)
+      .map(user => ({
+          emailID: user.emailID,
+          groupName: user.groupName,
+          groupAdmin: user.name
+      }));
+  res.json(groups);
+});
+
+app.get('/profile', (req, res) => {
+  const email = req.query.email;
+  const user = users.find(user => user.emailID === email);
+  
+  if (user) {
+    res.json(user);
+  } else {
+    res.status(404).json({ error: 'User not found' });
+  }
+});
+
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
