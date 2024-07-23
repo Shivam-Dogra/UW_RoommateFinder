@@ -137,8 +137,6 @@ const personSchema = new mongoose.Schema({
 // Create the model
 const Person = mongoose.model("Person", personSchema);
 
-// Initialize Express app
-
 // Define a GET endpoint to fetch all people
 app.get("/api/people", async (req, res) => {
   try {
@@ -149,8 +147,7 @@ app.get("/api/people", async (req, res) => {
   }
 });
 
-// post roomatefinder data
-
+// POST endpoint to create a new person
 app.post("/api/people", async (req, res) => {
   try {
     const uniqueKey = generateUniqueKey();
@@ -159,6 +156,21 @@ app.post("/api/people", async (req, res) => {
     res.status(201).json({ person: savedPerson, uniqueKey: uniqueKey });
   } catch (error) {
     res.status(400).json({ message: "Error creating person", error });
+  }
+});
+
+// POST endpoint to check if a unique key exists
+app.post("/api/checkUniqueKey", async (req, res) => {
+  try {
+    const { uniqueKey } = req.body;
+    const person = await Person.findOne({ uniqueKey });
+    if (person) {
+      res.json({ exists: true });
+    } else {
+      res.json({ exists: false });
+    }
+  } catch (error) {
+    res.status(400).json({ message: "Error checking unique key", error });
   }
 });
 

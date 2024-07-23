@@ -1,33 +1,60 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import windsorImage from '../assets/windsor.jpg'; // Adjust the path as necessary
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import windsorImage from "../assets/windsor.jpg"; // Adjust the path as necessary
 
 const RegisterUserPage = () => {
-  const [uniqueId, setUniqueId] = useState('');
+  const [uniqueId, setUniqueId] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = (event) => {
-    event.preventDefault(); 
-    if (uniqueId === 'windsor123') {
-      navigate('/home'); 
-    } else {
-      alert('Invalid ID. Please enter the correct ID.'); 
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      const response = await fetch("http://localhost:5000/api/checkUniqueKey", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ uniqueKey: uniqueId }),
+      });
+
+      const data = await response.json();
+
+      if (data.exists) {
+        navigate("/home");
+        localStorage.setItem("uniqueId", uniqueId);
+      } else {
+        alert("Invalid ID. Please enter the correct ID.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert(
+        "An error occurred while checking the unique ID. Please try again later."
+      );
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center" style={{ 
-        backgroundImage: `url(${windsorImage})`, 
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        backgroundBlendMode: 'overlay',
-        backgroundSize: 'cover', // Ensures the background covers the full screen
-        backgroundPosition: 'center' // Centers the background image
-      }}> 
-      
-      <div className="bg-white bg-opacity-75 p-10 rounded-lg shadow-xl w-full max-w-lg"> {/* Larger card with more padding */}
+    <div
+      className="min-h-screen flex items-center justify-center"
+      style={{
+        backgroundImage: `url(${windsorImage})`,
+        backgroundColor: "rgba(0, 0, 0, 0.5)",
+        backgroundBlendMode: "overlay",
+        backgroundSize: "cover", // Ensures the background covers the full screen
+        backgroundPosition: "center", // Centers the background image
+      }}>
+      <div className="bg-white bg-opacity-75 p-10 rounded-lg shadow-xl w-full max-w-lg">
+        {" "}
+        {/* Larger card with more padding */}
         <form onSubmit={handleSubmit} className="w-full">
-          <div className="mb-8"> {/* Increased margin-bottom */}
-            <label htmlFor="uniqueId" className="block text-gray-700 text-lg font-bold mb-3"> {/* Larger text */}
+          <div className="mb-8">
+            {" "}
+            {/* Increased margin-bottom */}
+            <label
+              htmlFor="uniqueId"
+              className="block text-gray-700 text-lg font-bold mb-3">
+              {" "}
+              {/* Larger text */}
               Enter Your Unique ID:
             </label>
             <input
