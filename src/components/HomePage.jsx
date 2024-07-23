@@ -1,9 +1,9 @@
-import React from 'react';
-import ProfileCard from './ProfileCard';
-import { users } from '../assets/profile';  
-import LandingSection from './LandingSection';
-import { useNavigate } from 'react-router-dom';
-
+import React from "react";
+import ProfileCard from "./ProfileCard";
+import { users } from "../assets/profile";
+import LandingSection from "./LandingSection";
+import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 
 const HomePage = () => {
   const [users, setUsers] = useState([]);
@@ -22,22 +22,17 @@ const HomePage = () => {
         <div className="container mx-auto flex justify-between items-center">
           <h1 className="font-bold text-xl">Roommate Finder 🔎</h1>
           <div>
-            <button 
-              className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 mx-5 rounded transition duration-300 ease-in-out"  
-              onClick={() => navigate('/explorewindsor')}
-            >
-              Explore Windsor 
-
+            <button
+              className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 mx-5 rounded transition duration-300 ease-in-out"
+              onClick={() => navigate("/explorewindsor")}>
+              Explore Windsor
             </button>
-            <button 
-              className="bg-blue-600 hover:bg-blue-800 text-white font-bold py-2 px-4 mx-5 rounded transition duration-300 ease-in-out"
-            >
+            <button className="bg-blue-600 hover:bg-blue-800 text-white font-bold py-2 px-4 mx-5 rounded transition duration-300 ease-in-out">
               My Profile
             </button>
-            <button 
+            <button
               className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out"
-              onClick={() => navigate('/viewgroups')}
-            >
+              onClick={() => navigate("/viewgroups")}>
               View Groups
             </button>
           </div>
