@@ -12,24 +12,41 @@ const HomePage = () => {
   useEffect(() => {
     fetch("http://localhost:5000/api/people")
       .then((response) => response.json())
-      .then((data) => setUsers(data))
-      .catch((error) => console.error("Error fetching user data:", error));
+      .then((data) => {
+        // Store all users in state
+        setUsers(data);
+
+        // Get unique keys from local storage
+        const storedUniqueKeys = localStorage.getItem("uniqueId");
+
+        // Filter out users with unique keys from local storage
+        const filtered = data.filter((user) =>
+          storedUniqueKeys.includes(user.uniqueKey)
+        );
+
+        localStorage.setItem("usernames", filtered[0].fullName);
+        localStorage.getItem("usernames");
+      })
+      .catch((error) => console.error("Error fetching users:", error));
   }, []);
+
+  const username = localStorage.getItem("usernames");
 
   return (
     <div className="bg-gradient-to-br from-red-500 to-red-700 min-h-screen">
       <nav className="bg-red-800 text-white p-4 shadow-md">
         <div className="container mx-auto flex justify-between items-center">
           <h1 className="font-bold text-xl">Roommate Finder 🔎</h1>
-          <div>
+          <div style={{ display: "flex" }}>
+            <div className="text-white font-bold py-2 px-4 mx-5 rounded transition duration-300 ease-in-out">
+              {username}
+            </div>
             <button
               className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 mx-5 rounded transition duration-300 ease-in-out"
               onClick={() => navigate("/explorewindsor")}>
               Explore Windsor
             </button>
-            <button className="bg-blue-600 hover:bg-blue-800 text-white font-bold py-2 px-4 mx-5 rounded transition duration-300 ease-in-out">
-              My Profile
-            </button>
+
             <button
               className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out"
               onClick={() => navigate("/viewgroups")}>

@@ -142,13 +142,12 @@ const Person = mongoose.model("Person", personSchema);
 
 // Define the schema for Group
 const groupSchema = new mongoose.Schema({
-  groupName: { type: String, required: true },
-  groupDescription: { type: String, required: true },
-  admin: { type: String, required: true }, // Admin is now a string containing the fullName
-  members: [{ type: mongoose.Schema.Types.ObjectId, ref: "Person" }], // Members array remains as ObjectId references to Person
+  groupName: String,
+  groupDescription: String,
+  admin: String,
+  members: [String], // Change this to an array of strings
 });
 
-// Create the model for Group
 const Group = mongoose.model("Group", groupSchema);
 
 // Define a GET endpoint to fetch all people
@@ -279,6 +278,36 @@ app.delete("/api/groups/:id", async (req, res) => {
   }
 });
 
+app.post("/api/groups/add-member", async (req, res) => {
+  try {
+    const { groupId, username } = req.body;
+
+    // Validate input
+    if (!groupId || !username) {
+      return res
+        .status(400)
+        .json({ message: "GroupId and username are required" });
+    }
+
+    // Find the group by its ID
+    const group = await Group.findById(groupId).exec();
+    if (!group) {
+      return res.status(404).json({ message: "Group not found" });
+    }
+
+    // Check if the username is already in the members array
+    if (!group.members.includes(username)) {
+      group.members.push(username);
+      await group.save();
+    }
+
+    // Respond with the updated group
+    res.json({ message: "Member added successfully", group });
+  } catch (error) {
+    console.error("Error adding member to group:", error);
+    res.status(400).json({ message: "Error adding member to group", error });
+  }
+});
 // Start the server
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
