@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import Modal from "react-modal";
+import "./index.css";
 
 export const getRandomEmoji = () => {
   const emojis = ["😀", "🎉", "🏠", "📚", "💼", "🚀", "🍕", "🎮", "🌟", "💡"];
@@ -8,10 +10,22 @@ export const getRandomEmoji = () => {
 
 const GroupCard = ({ group, onJoin }) => {
   const [isJoining, setIsJoining] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [groupKey, setgroupKey] = useState("");
   const randomEmoji = getRandomEmoji();
 
-  const handleJoin = async () => {
+  const handleJoin = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+    setgroupKey("");
+  };
+
+  const handleKeySubmit = async () => {
     setIsJoining(true);
+    setIsModalOpen(false);
     try {
       const response = await fetch(
         "http://localhost:5000/api/groups/add-member",
@@ -21,8 +35,10 @@ const GroupCard = ({ group, onJoin }) => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
+            adminName: group[0].admin,
             groupId: group[0]._id,
             username: localStorage.getItem("usernames"),
+            groupKey: groupKey,
           }),
         }
       );
@@ -41,16 +57,16 @@ const GroupCard = ({ group, onJoin }) => {
   };
 
   const colors = [
-    "#FF5733", // Red
-    "#33FF57", // Green
-    "#3357FF", // Blue
-    "#FF33A1", // Pink
-    "#FFD733", // Yellow
-    "#33FFD7", // Cyan
-    "#FF7F33", // Orange
-    "#7F33FF", // Purple
-    "#33FF7F", // Light Green
-    "#FF3333", // Light Red
+    "#FF5733",
+    "#33FF57",
+    "#3357FF",
+    "#FF33A1",
+    "#FFD733",
+    "#33FFD7",
+    "#FF7F33",
+    "#7F33FF",
+    "#33FF7F",
+    "#FF3333",
   ];
 
   return (
@@ -85,9 +101,9 @@ const GroupCard = ({ group, onJoin }) => {
             key={index}
             style={{
               marginLeft: "0.2rem",
-              color: colors[index % colors.length], // Assign color based on index
+              color: colors[index % colors.length],
               fontWeight: "bold",
-              border: `2px solid ${colors[index % colors.length]}`, // Border color
+              border: `2px solid ${colors[index % colors.length]}`,
               borderRadius: "4px",
               padding: "0.2rem 0.5rem",
               display: "inline-block",
@@ -102,6 +118,33 @@ const GroupCard = ({ group, onJoin }) => {
         disabled={isJoining}>
         {isJoining ? "Joining..." : "Join Group"}
       </button>
+      <Modal
+        isOpen={isModalOpen}
+        onRequestClose={handleModalClose}
+        contentLabel="Enter Unique Key"
+        className="modal"
+        overlayClassName="modal-overlay">
+        <h2 className="text-xl font-bold mb-4">
+          Enter Unique Key Provided By Admin
+        </h2>
+        <input
+          type="text"
+          value={groupKey}
+          onChange={(e) => setgroupKey(e.target.value)}
+          className="border rounded w-full py-2 px-3 mb-4"
+          placeholder="Enter the unique key"
+        />
+        <button
+          onClick={handleKeySubmit}
+          className="bg-blue-600 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded">
+          Submit
+        </button>
+        <button
+          onClick={handleModalClose}
+          className="bg-gray-400 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded ml-2">
+          Cancel
+        </button>
+      </Modal>
     </div>
   );
 };

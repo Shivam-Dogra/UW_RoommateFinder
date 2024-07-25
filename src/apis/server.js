@@ -133,6 +133,7 @@ const personSchema = new mongoose.Schema({
   wantsToFormGroup: { type: String, required: true },
   interests: { type: [String], required: false },
   uniqueKey: { type: String, unique: true, required: true },
+  groupKey: { type: String, unique: true, required: true }, // Added groupKey field
   groupName: { type: String, required: false },
   groupDescription: { type: String, required: false },
 });
@@ -164,8 +165,9 @@ app.get("/api/people", async (req, res) => {
 app.post("/api/people", async (req, res) => {
   try {
     const uniqueKey = generateUniqueKey();
+    const groupKey = generateUniqueKey(); //
     const { groupName, groupDescription, ...personDetails } = req.body;
-    const newPerson = new Person({ ...personDetails, uniqueKey });
+    const newPerson = new Person({ ...personDetails, uniqueKey, groupKey });
     const savedPerson = await newPerson.save();
 
     if (groupName && groupDescription) {
@@ -280,13 +282,22 @@ app.delete("/api/groups/:id", async (req, res) => {
 
 app.post("/api/groups/add-member", async (req, res) => {
   try {
-    const { groupId, username } = req.body;
+    const { adminName, groupKey, groupId, username } = req.body;
 
     // Validate input
-    if (!groupId || !username) {
+    if (!adminName || !groupKey || !groupId || !username) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    // Find the admin in the Person schema using adminName and uniqueKey
+    const admin = await Person.findOne({
+      fullName: adminName,
+      groupKey,
+    }).exec();
+    if (!admin) {
       return res
-        .status(400)
-        .json({ message: "GroupId and username are required" });
+        .status(403)
+        .json({ message: "Invalid admin name or unique key" });
     }
 
     // Find the group by its ID
@@ -299,6 +310,8 @@ app.post("/api/groups/add-member", async (req, res) => {
     if (!group.members.includes(username)) {
       group.members.push(username);
       await group.save();
+    } else {
+      return res.status(400).json({ message: "Username already in the group" });
     }
 
     // Respond with the updated group
@@ -308,6 +321,7 @@ app.post("/api/groups/add-member", async (req, res) => {
     res.status(400).json({ message: "Error adding member to group", error });
   }
 });
+
 // Start the server
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
