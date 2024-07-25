@@ -161,6 +161,23 @@ app.get("/api/people", async (req, res) => {
   }
 });
 
+//// GET endpoint to fetch user info by username
+app.get("/api/people/:username", async (req, res) => {
+  try {
+    const username = req.params.username;
+    const user = await Person.findOne({ fullName: username });
+    console.log(user);
+    if (user) {
+      res.json(user);
+    } else {
+      res.status(404).json({ message: "User not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching user info", error });
+  }
+});
+
+
 // POST endpoint to create a new person
 app.post("/api/people", async (req, res) => {
   try {
