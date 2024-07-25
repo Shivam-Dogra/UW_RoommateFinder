@@ -11,6 +11,7 @@ import ProfileCard from "./components/ProfileCard"; // Adjust the path if necess
 import ViewGroupCard from "./components/ViewGroupCard"; // Adjust the path if necessary
 import { users, group } from "./assets/profile"; // Adjust the path if necessary
 import ViewGroupsPage from "./components/ViewGroupsPage";
+import ViewProfilePage from "./components/ViewProfilePage";
 
 const App = () => {
   return (
@@ -23,6 +24,7 @@ const App = () => {
         <Route path="/explorewindsor" element={<ExploreWindsor />} />
         <Route path="/profile" element={<ProfileCard user={users} />} />{" "}
         {/* Example with the first user */}
+        <Route path="/profile/:username" element={<ViewProfilePage />} />
         <Route path="/group" element={<ViewGroupCard group={group} />} />
         <Route path="/viewgroups" element={<ViewGroupsPage />} />
       </Routes>
