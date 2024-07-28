@@ -28,7 +28,7 @@ const App = () => {
         <Route path="/profile/:username" element={<ViewProfilePage />} />
         {/* <Route path="/group" element={<ViewGroupCard group={group} />} /> */}
         <Route path="/viewgroups" element={<ViewGroupsPage />} />
-        <Route path="/viewspecificgroup/:userId" element={<ViewSpecificGroup />} />
+        <Route path="/viewspecificgroup/:userName" element={<ViewSpecificGroup />} />
       </Routes>
     </Router>
   );
