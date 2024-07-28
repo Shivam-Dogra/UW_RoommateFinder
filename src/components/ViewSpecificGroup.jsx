@@ -1,10 +1,9 @@
 // ViewSpecificGroup.js
-
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 const ViewSpecificGroup = () => {
-  const { userId } = useParams();
+  const { userName } = useParams();
   const [groups, setGroups] = useState([]);
   const [userGroups, setUserGroups] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -32,11 +31,11 @@ const ViewSpecificGroup = () => {
   useEffect(() => {
     if (groups.length > 0) {
       const filteredGroups = groups.filter(group =>
-        group.members.includes(userId)
+        group.members.includes(userName)
       );
       setUserGroups(filteredGroups);
     }
-  }, [groups, userId]);
+  }, [groups, userName]);
 
   if (loading) {
     return <div>Loading...</div>;

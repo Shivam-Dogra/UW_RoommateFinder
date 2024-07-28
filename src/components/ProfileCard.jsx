@@ -1,5 +1,4 @@
 // ProfileCard.js
-
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -18,7 +17,7 @@ const ProfileCard = ({ user }) => {
   const navigate = useNavigate();
 
   const handleViewJoinGroup = () => {
-    navigate(`/viewspecificgroup/${user._id}`);
+    navigate(`/viewspecificgroup/${user.fullName}`);
   };
 
   const emoji = getRandomEmoji(user.gender);
