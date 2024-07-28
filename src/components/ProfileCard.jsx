@@ -1,3 +1,4 @@
+// ProfileCard.js
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -16,7 +17,7 @@ const ProfileCard = ({ user }) => {
   const navigate = useNavigate();
 
   const handleViewJoinGroup = () => {
-    navigate("/group");
+    navigate(`/viewspecificgroup/${user.fullName}`);
   };
 
   const emoji = getRandomEmoji(user.gender);
@@ -66,7 +67,7 @@ const ProfileCard = ({ user }) => {
           onClick={handleViewJoinGroup}
           className="bg-yellow-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded block w-full mt-4"
         >
-          View/Join Group
+          View Group
         </button>
       </div>
     </div>
