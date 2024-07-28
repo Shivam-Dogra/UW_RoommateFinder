@@ -40,14 +40,7 @@ const ViewGroupsPage = () => {
               onClick={() => navigate("/explorewindsor")}>
               Explore Windsor
             </button>
-            <button className="bg-blue-600 hover:bg-blue-800 text-white font-bold py-2 px-4 mx-5 rounded transition duration-300 ease-in-out">
-              My Profile
-            </button>
-            <button
-              className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out"
-              onClick={() => navigate("/viewgroups")}>
-              View Groups
-            </button>
+            
           </div>
         </div>
       </nav>

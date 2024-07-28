@@ -12,6 +12,7 @@ import ViewGroupCard from "./components/ViewGroupCard"; // Adjust the path if ne
 import { users, group } from "./assets/profile"; // Adjust the path if necessary
 import ViewGroupsPage from "./components/ViewGroupsPage";
 import ViewProfilePage from "./components/ViewProfilePage";
+import ViewSpecificGroup from './components/ViewSpecificGroup';
 
 const App = () => {
   return (
@@ -25,8 +26,9 @@ const App = () => {
         <Route path="/profile" element={<ProfileCard user={users} />} />{" "}
         {/* Example with the first user */}
         <Route path="/profile/:username" element={<ViewProfilePage />} />
-        <Route path="/group" element={<ViewGroupCard group={group} />} />
+        {/* <Route path="/group" element={<ViewGroupCard group={group} />} /> */}
         <Route path="/viewgroups" element={<ViewGroupsPage />} />
+        <Route path="/viewspecificgroup/:userId" element={<ViewSpecificGroup />} />
       </Routes>
     </Router>
   );
