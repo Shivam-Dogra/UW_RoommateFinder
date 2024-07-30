@@ -1,6 +1,3 @@
-Below is a structured description for the README.md file for the UniRoomMatess project. This template provides a comprehensive overview, installation instructions, and how to get started with the application.
-
----
 
 UniRoomMatess
 
